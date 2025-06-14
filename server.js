@@ -101,21 +101,113 @@ connectDB();
 // Routes with error handling
 const setupRoutes = () => {
   try {
-    app.use('/api/auth', authRoutes);
-    app.use('/api/admin', adminRoutes);
-    app.use('/api/tests', testRoutes);
-    app.use('/api/questions', questionRoutes);
-    app.use('/api/categories', categoryRoutes);
-    app.use('/api/blog', blogRoutes);
-    app.use('/api/notifications', notificationRoutes);
-    app.use('/api/test-results', testResultRoutes);
-    app.use('/api/subscriptions', subscriptionRoutes);
-    app.use('/api/subscription-plans', subscriptionPlanRoutes);
-    app.use('/api/iq-rankings', iqRankingsRoutes);
-    app.use('/api/campaigns', campaignRoutes);
-    app.use('/api/pixels', pixelRoutes);
-    app.use('/api/pages', pageRoutes);
-    app.use('/api/admin-activities', adminActivityRoutes);
+    logger.info('Loading routes...');
+    
+    // Load routes one by one to identify the problematic one
+    try {
+      app.use('/api/auth', authRoutes);
+      logger.info('Auth routes loaded');
+    } catch (error) {
+      logger.error('Error loading auth routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/admin', adminRoutes);
+      logger.info('Admin routes loaded');
+    } catch (error) {
+      logger.error('Error loading admin routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/tests', testRoutes);
+      logger.info('Test routes loaded');
+    } catch (error) {
+      logger.error('Error loading test routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/questions', questionRoutes);
+      logger.info('Question routes loaded');
+    } catch (error) {
+      logger.error('Error loading question routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/categories', categoryRoutes);
+      logger.info('Category routes loaded');
+    } catch (error) {
+      logger.error('Error loading category routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/blog', blogRoutes);
+      logger.info('Blog routes loaded');
+    } catch (error) {
+      logger.error('Error loading blog routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/notifications', notificationRoutes);
+      logger.info('Notification routes loaded');
+    } catch (error) {
+      logger.error('Error loading notification routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/test-results', testResultRoutes);
+      logger.info('Test result routes loaded');
+    } catch (error) {
+      logger.error('Error loading test result routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/subscriptions', subscriptionRoutes);
+      logger.info('Subscription routes loaded');
+    } catch (error) {
+      logger.error('Error loading subscription routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/subscription-plans', subscriptionPlanRoutes);
+      logger.info('Subscription plan routes loaded');
+    } catch (error) {
+      logger.error('Error loading subscription plan routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/iq-rankings', iqRankingsRoutes);
+      logger.info('IQ ranking routes loaded');
+    } catch (error) {
+      logger.error('Error loading IQ ranking routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/campaigns', campaignRoutes);
+      logger.info('Campaign routes loaded');
+    } catch (error) {
+      logger.error('Error loading campaign routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/pixels', pixelRoutes);
+      logger.info('Pixel routes loaded');
+    } catch (error) {
+      logger.error('Error loading pixel routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/pages', pageRoutes);
+      logger.info('Page routes loaded');
+    } catch (error) {
+      logger.error('Error loading page routes:', error.message);
+    }
+    
+    try {
+      app.use('/api/admin-activities', adminActivityRoutes);
+      logger.info('Admin activity routes loaded');
+    } catch (error) {
+      logger.error('Error loading admin activity routes:', error.message);
+    }
     
     logger.info('All routes loaded successfully');
   } catch (error) {
