@@ -94,15 +94,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Statik dosya servis etme - Uploads klasörü için (sadece development'da)
-if (process.env.NODE_ENV === 'development') {
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-    setHeaders: (res, path) => {
-      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
-    }
-  }));
-}
-
 // MongoDB Connection with better error handling
 const connectDB = async () => {
   try {
