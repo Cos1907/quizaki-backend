@@ -32,31 +32,22 @@ const connectDB = async () => {
 
 connectDB();
 
-// Basic routes only
+// Simple test route
 app.get('/', (req, res) => {
   res.json({
     message: 'API is running...',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    mongoStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
 app.get('/health', (req, res) => {
-  const health = {
+  res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-    mongoStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-  };
-  
-  if (mongoose.connection.readyState !== 1) {
-    health.status = 'ERROR';
-    health.mongoError = 'MongoDB not connected';
-  }
-  
-  res.json(health);
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // 404 handler
