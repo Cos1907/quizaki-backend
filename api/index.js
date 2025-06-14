@@ -1,5 +1,6 @@
 // Vercel serverless function handler
 // Updated for proper Vercel deployment
+// Triggering new deployment for testing
 module.exports = (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
