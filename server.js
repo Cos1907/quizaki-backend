@@ -47,10 +47,10 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'https://panel.senin-domainin.com',
   'https://senin-domainin.com',
-  'https://*.vercel.app',
-  'https://mobil.iqtestim.com',
+  'https://mobil.iqtestim.com', // Admin panel domain
   'https://panel.iqtestim.com',
-  'https://iqtestim.com'
+  'https://iqtestim.com',
+  'https://iqtestim-backend.vercel.app' // Backend domain
 ];
 
 app.use(cors({
@@ -58,17 +58,27 @@ app.use(cors({
     // allow requests with no origin (like mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     
+    // Validate origin format
+    try {
+      new URL(origin);
+    } catch (error) {
+      logger.warn(`Invalid origin format: ${origin}`);
+      return callback(null, false);
+    }
+    
     // Check if origin is in allowed list
     const isAllowed = allowedOrigins.some(allowed => {
-      if (allowed.includes('*')) {
-        return origin.includes(allowed.replace('*', ''));
-      }
       return origin === allowed;
     });
     
+    // Also allow Vercel preview URLs
+    if (origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
     if (!isAllowed) {
-      const msg = 'CORS policy: Bu kaynaktan erişime izin verilmiyor.';
-      return callback(new Error(msg), false);
+      logger.warn(`CORS blocked origin: ${origin}`);
+      return callback(null, false);
     }
     return callback(null, true);
   },
@@ -86,8 +96,24 @@ app.use((req, res, next) => {
 
 // Statik dosya servis etme - Uploads klasörü için (sadece production'da)
 if (process.env.NODE_ENV === 'production') {
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    setHeaders: (res, path) => {
+      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    }
+  }));
 }
+
+// Add error handling for malformed URLs
+app.use((req, res, next) => {
+  try {
+    // Validate URL format
+    new URL(req.url, `http://${req.headers.host}`);
+    next();
+  } catch (error) {
+    logger.warn(`Malformed URL: ${req.url}`);
+    return res.status(400).json({ error: 'Invalid URL format' });
+  }
+});
 
 // MongoDB Connection with better error handling
 const connectDB = async () => {
