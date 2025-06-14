@@ -48,16 +48,25 @@ const allowedOrigins = [
   'https://panel.senin-domainin.com',
   'https://senin-domainin.com',
   'https://*.vercel.app',
-  'https://*.vercel.app/*',
   'https://mobil.iqtestim.com',
   'https://panel.iqtestim.com',
   'https://iqtestim.com'
 ];
+
 app.use(cors({
   origin: function(origin, callback) {
     // allow requests with no origin (like mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
+    
+    // Check if origin is in allowed list
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (allowed.includes('*')) {
+        return origin.includes(allowed.replace('*', ''));
+      }
+      return origin === allowed;
+    });
+    
+    if (!isAllowed) {
       const msg = 'CORS policy: Bu kaynaktan erişime izin verilmiyor.';
       return callback(new Error(msg), false);
     }
@@ -75,8 +84,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Statik dosya servis etme - Uploads klasörü için
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Statik dosya servis etme - Uploads klasörü için (sadece production'da)
+if (process.env.NODE_ENV === 'production') {
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+}
 
 // MongoDB Connection with better error handling
 const connectDB = async () => {
