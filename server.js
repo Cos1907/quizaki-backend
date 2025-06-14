@@ -103,18 +103,6 @@ if (process.env.NODE_ENV === 'production') {
   }));
 }
 
-// Add error handling for malformed URLs
-app.use((req, res, next) => {
-  try {
-    // Validate URL format
-    new URL(req.url, `http://${req.headers.host}`);
-    next();
-  } catch (error) {
-    logger.warn(`Malformed URL: ${req.url}`);
-    return res.status(400).json({ error: 'Invalid URL format' });
-  }
-});
-
 // MongoDB Connection with better error handling
 const connectDB = async () => {
   try {
