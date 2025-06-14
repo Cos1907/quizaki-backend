@@ -94,6 +94,28 @@ app.use((req, res, next) => {
   next();
 });
 
+// URL validation middleware to prevent path-to-regexp errors
+app.use((req, res, next) => {
+  try {
+    // Check for malformed URLs that might cause path-to-regexp errors
+    if (req.url && (req.url.includes('http://') || req.url.includes('https://'))) {
+      logger.warn(`Malformed URL detected: ${req.url}`);
+      return res.status(400).json({ error: 'Malformed URL detected' });
+    }
+    
+    // Validate URL format
+    if (req.url && !req.url.startsWith('/')) {
+      logger.warn(`Invalid URL format: ${req.url}`);
+      return res.status(400).json({ error: 'Invalid URL format' });
+    }
+    
+    next();
+  } catch (error) {
+    logger.error('URL validation error:', error);
+    return res.status(400).json({ error: 'URL validation failed' });
+  }
+});
+
 // MongoDB Connection with better error handling
 const connectDB = async () => {
   try {
